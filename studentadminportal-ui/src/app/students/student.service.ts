@@ -43,4 +43,8 @@ private baseApi="https://localhost:44305";
     return this.httpClient.put<Student>(this.baseApi+'/student/'+ studentId , updateStudentRequest);
 
   }
+
+  deleteStudent(studentId: string) : Observable<Student>{
+    return this.httpClient.delete<Student>(this.baseApi+'/student/'+studentId)
+  }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Gender } from 'src/app/models/ui-models/gender.model';
 import { Student } from 'src/app/models/ui-models/student.model';
 import { GenderService } from 'src/app/sevices/gender.service';
@@ -40,7 +40,8 @@ export class ViewStudentComponent implements OnInit {
   constructor(private readonly studentService: StudentService ,
     private readonly route: ActivatedRoute,
     private readonly genderService: GenderService,
-    private snackbar: MatSnackBar) { }               // injecting service
+    private snackbar: MatSnackBar,
+    private router: Router) { }               // injecting service
                                                           // ActivatedRoute to take details out of url
   ngOnInit(): void {
     this.route.paramMap.subscribe(
@@ -84,6 +85,25 @@ export class ViewStudentComponent implements OnInit {
      );
 
 
+    }
+
+    onDelete(): void{
+      //student service to delete api
+     var res= this.studentService.deleteStudent(this.student.id);
+
+     res.subscribe(
+       (successResponse)=> this.snackbar.open("Student deleted Successfully", undefined, {
+         duration:2000
+       })
+     );
+
+     setTimeout(()=> {                   // to navigate back to student page after deletion after 2 sec
+      this.router.navigateByUrl('students');
+     },2000);
+
+     res.subscribe(
+      (errorResponse)=> console.log(errorResponse)
+    );
     }
 
 }
