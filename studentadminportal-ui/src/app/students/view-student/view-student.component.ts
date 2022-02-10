@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { Gender } from 'src/app/models/ui-models/gender.model';
 import { Student } from 'src/app/models/ui-models/student.model';
+import { GenderService } from 'src/app/sevices/gender.service';
 import { StudentService } from '../student.service';
 
 @Component({
@@ -31,8 +34,14 @@ export class ViewStudentComponent implements OnInit {
           }
 
     }
-  constructor(private readonly studentService: StudentService , private readonly route: ActivatedRoute) { }   // injecting service
-   // ActivatedRoute to take details out of url
+
+    genderList: Gender[]=[];
+
+  constructor(private readonly studentService: StudentService ,
+    private readonly route: ActivatedRoute,
+    private readonly genderService: GenderService,
+    private snackbar: MatSnackBar) { }               // injecting service
+                                                          // ActivatedRoute to take details out of url
   ngOnInit(): void {
     this.route.paramMap.subscribe(
          (params) => {
@@ -42,11 +51,39 @@ export class ViewStudentComponent implements OnInit {
               var response =this.studentService.getStudent( this.studentId);
 
                response.subscribe((successResponse) => this.student=successResponse);
-               response.subscribe((errorResponse) => console.log(errorResponse));
 
             }
-     }
+
+
+          }
     );
+    // to get gender list from api
+      this.genderService.getGenderList().subscribe(
+          (successResponse)=> {
+              this.genderList=successResponse;
+       }
+    )
   }
+
+
+
+    onUpdate():void {
+    // Call student service to update student
+     var updatesResponse=this.studentService.updateStudent(this.student.id, this.student);
+
+     updatesResponse.subscribe(
+       (successResponse)=> {
+      this.snackbar.open("Student updated Successfully",undefined, {
+         duration:2000
+      })
+       }
+     );
+
+     updatesResponse.subscribe(
+       (errorResponse) => console.log(errorResponse)
+     );
+
+
+    }
 
 }
