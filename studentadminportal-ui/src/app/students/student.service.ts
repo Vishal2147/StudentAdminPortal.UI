@@ -17,4 +17,11 @@ private baseApi="https://localhost:44305";
   getStudents():Observable<Student[]> {  // to call Student get API ie httpget
     return  this.httpClient.get<Student[]>(this.baseApi+"/student");    // returns an observable Array of student so wee need to subscribe in component.ts
   }
+
+  getStudent(studentId : string) : Observable<Student>{
+
+    var res= this.httpClient.get<Student>(this.baseApi+'/student/'+studentId);
+    console.log(res);
+    return res;
+  }
 }

@@ -16,7 +16,7 @@ export class StudentsComponent implements OnInit {
 
   filterString : string="";
    students: Student[]=[];
-   displayedColumns: string[] = ['firstName', 'lastName', 'dateOfBirth', 'email', 'mobile', 'gender'];  // for table display
+   displayedColumns: string[] = ['firstName', 'lastName', 'dateOfBirth', 'email', 'mobile', 'gender' ,'edit'];  // for table display
 
     dataSource: MatTableDataSource<Student> =new MatTableDataSource<Student>();
 
