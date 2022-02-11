@@ -14,6 +14,8 @@ import { StudentService } from '../student.service';
 export class ViewStudentComponent implements OnInit {
 
    studentId: string | null | undefined;
+   isNewStudent=false;
+   header='';
     student : Student={
           id:"",
           firstName:"",
@@ -49,10 +51,22 @@ export class ViewStudentComponent implements OnInit {
           this.studentId=params.get('id');
 
             if(this.studentId){
-              var response =this.studentService.getStudent( this.studentId);
 
-               response.subscribe((successResponse) => this.student=successResponse);
+              //if route contains keyword add
+              //this will be create student fuctionality
 
+              if(this.studentId.toLowerCase()=== 'Add'.toLowerCase()){
+                      this.isNewStudent=true;
+                      this.header='Add New Student';
+              }else{
+                    //otherwise existing student functionality
+                    this.isNewStudent=false;
+                    this.header="Edit Student";
+
+                    var response =this.studentService.getStudent( this.studentId);
+
+                    response.subscribe((successResponse) => this.student=successResponse);
+              }
             }
 
 
@@ -106,4 +120,17 @@ export class ViewStudentComponent implements OnInit {
     );
     }
 
-}
+    onAdd(): void{
+     var res= this.studentService.addStudent(this.student);
+
+      res.subscribe(
+        (successResponse)=> this.snackbar.open("Student Added Successfully", undefined, {
+          duration:2000})
+      );
+
+      setTimeout(() => {
+        this.router.navigateByUrl("students/${successResponse.id}");
+      },2000);
+    }
+
+  }
