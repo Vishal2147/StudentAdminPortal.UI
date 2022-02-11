@@ -37,6 +37,8 @@ export class ViewStudentComponent implements OnInit {
 
     }
 
+    displayProfileImageUrl:string ='';
+
     genderList: Gender[]=[];
 
   constructor(private readonly studentService: StudentService ,
@@ -58,6 +60,7 @@ export class ViewStudentComponent implements OnInit {
               if(this.studentId.toLowerCase()=== 'Add'.toLowerCase()){
                       this.isNewStudent=true;
                       this.header='Add New Student';
+                      this.setImage();
               }else{
                     //otherwise existing student functionality
                     this.isNewStudent=false;
@@ -66,6 +69,10 @@ export class ViewStudentComponent implements OnInit {
                     var response =this.studentService.getStudent( this.studentId);
 
                     response.subscribe((successResponse) => this.student=successResponse);
+                    this.setImage();
+
+                    response.subscribe((errorResponse) => this.setImage());
+
               }
             }
 
@@ -131,6 +138,35 @@ export class ViewStudentComponent implements OnInit {
       setTimeout(() => {
         this.router.navigateByUrl("students/${successResponse.id}");
       },2000);
+    }
+
+    public setImage():void{
+
+      if(this.student.profileImageUrl){
+            // Fetch the Image url
+            this.displayProfileImageUrl=this.studentService.getImagePath(this.student.profileImageUrl);
+      }else{
+             //Display a default image
+             this.displayProfileImageUrl="/assets/user.png";
+
+      }
+
+    }
+
+    uploadImage(event: any):void{
+       if(this.studentId){
+         const file:File = event.target.files[0];
+        var res= this.studentService.uplaodImage(this.studentId,file);
+
+        res.subscribe((successResponse)=> {
+          this.student.profileImageUrl=successResponse;
+          this.setImage();
+
+          this.snackbar.open("Image uploaded Successfully", undefined, {
+            duration:2000})
+        })
+
+       }
     }
 
   }

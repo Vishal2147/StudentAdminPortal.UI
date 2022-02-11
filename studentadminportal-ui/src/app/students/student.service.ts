@@ -65,4 +65,18 @@ private baseApi="https://localhost:44305";
       return  this.httpClient.post<Student>(this.baseApi+'/student/add',addStudentRequest);
 
 }
+
+uplaodImage(studentId: string, file:File) :Observable<string> {
+  const formData=new FormData();
+
+  formData.append("profileImage", file);
+
+  return this.httpClient.post(this.baseApi+'/student/'+studentId+ '/upload-image', formData, {
+    responseType:'text'
+  })
+}
+
+getImagePath(relativePath: string){
+  return `${this.baseApi}/${relativePath}`;
+}
 }
