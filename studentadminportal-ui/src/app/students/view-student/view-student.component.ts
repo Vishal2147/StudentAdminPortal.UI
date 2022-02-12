@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Gender } from 'src/app/models/ui-models/gender.model';
@@ -40,6 +41,7 @@ export class ViewStudentComponent implements OnInit {
     displayProfileImageUrl:string ='';
 
     genderList: Gender[]=[];
+    @ViewChild('studentDetailsForm') studentDetailsForm?: NgForm;
 
   constructor(private readonly studentService: StudentService ,
     private readonly route: ActivatedRoute,
@@ -90,7 +92,10 @@ export class ViewStudentComponent implements OnInit {
 
 
     onUpdate():void {
-    // Call student service to update student
+
+      if(this.studentDetailsForm?.form.valid){
+
+      // Call student service to update student
      var updatesResponse=this.studentService.updateStudent(this.student.id, this.student);
 
      updatesResponse.subscribe(
@@ -104,6 +109,9 @@ export class ViewStudentComponent implements OnInit {
      updatesResponse.subscribe(
        (errorResponse) => console.log(errorResponse)
      );
+
+      }
+
 
 
     }
@@ -128,7 +136,10 @@ export class ViewStudentComponent implements OnInit {
     }
 
     onAdd(): void{
-     var res= this.studentService.addStudent(this.student);
+
+      if(this.studentDetailsForm?.form.valid){
+        //submit form data to api
+        var res= this.studentService.addStudent(this.student);
 
       res.subscribe(
         (successResponse)=> this.snackbar.open("Student Added Successfully", undefined, {
@@ -139,6 +150,8 @@ export class ViewStudentComponent implements OnInit {
         this.router.navigateByUrl("students/${successResponse.id}");
       },2000);
     }
+
+      }
 
     public setImage():void{
 
