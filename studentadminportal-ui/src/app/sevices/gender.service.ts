@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { Gender } from '../models/api-models/gender.model';
 
 @Injectable({
@@ -8,7 +9,7 @@ import { Gender } from '../models/api-models/gender.model';
 })
 export class GenderService {
 
-  private baseApi="https://localhost:44305";
+  private baseApi=environment.baseApiUrl;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -16,3 +17,4 @@ export class GenderService {
     return this.httpClient.get<Gender[]>(this.baseApi+ '/genders')
   }
 }
+ 
